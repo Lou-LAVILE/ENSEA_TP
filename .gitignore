@@ -1,0 +1,7 @@
+#file extension exclude
+.pdf
+.odt
+
+#doc exclude
+compte_rendu
+__pycache__
