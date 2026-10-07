@@ -1,6 +1,7 @@
 #file extension exclude
 *.pdf
 *.odt
+*.zip
 
 #folder exclude
 compte_rendu
