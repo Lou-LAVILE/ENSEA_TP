@@ -1,0 +1,127 @@
+/*
+ * utils.c
+ *
+ *  Created on: Sep 25, 2023
+ *      Author: antotauv
+ */
+
+#include "utils.h"
+#include "main.h"
+#include "utils.h"
+#include "ssd1315.h"
+#include "fonts.h"
+//#include "cityDataBase.h"
+#include <stdio.h>
+#include "usart.h"
+
+//renvoie la taille de la trame reçu et rempli un tableau avec les caractères
+int fillBuffer(char * buffer, int size){
+	int i;
+	char received_char;
+	int total = 0;
+
+	//initialise le tableau à zéro
+	for(i=0; i<size; i++){
+		buffer[i] = 0;
+	}
+
+	//démarre une réception
+	HAL_UART_Abort(&huart1);
+
+	//attend la réception d'un "$"
+	do{
+		HAL_UART_Receive(&huart1, (uint8_t*)&received_char, 1, 0);
+	}
+	while(received_char!='$');
+
+	//enregistre les différents caractères dans le buffer + calcul le nbr d'élément
+	do{
+		*buffer = received_char;
+		HAL_UART_Receive(&huart1, (uint8_t*)&received_char, 1, 0);
+		total++;
+		buffer++;
+	}
+	while(received_char!='\n');
+
+	*buffer = received_char;
+
+	return total;
+}
+
+// check si la transmition commence par $GPGGA
+int isGPGCA(char *frame){
+	char *start = "$GPGGA"
+	for(int i=0; i<6; i++){
+		if(frame[i]!=start[i]){
+			return -1;
+		}
+	}
+	return 1;
+}
+
+//extrait le checksum
+int extractChecksum(char *buffer){
+	while(*buffer!='*'){
+		buffer++;
+	}
+
+	//récupère octet des deux dernier character et les convertis en entier
+	return (buffer[1]&0x0f)*16+(buffer[2]&0x0f);
+}
+
+//calcul le checksum
+int calculateChecksum(char *buffer){
+	int checksum = 0;
+	buffer++;
+	while(*buffer!='*'){
+		checksum = checksum^(*buffer);
+		buffer++;
+	}
+
+	return checksum;
+}
+
+//check si la trame est correcte est renvoie un booléen
+int checkFrame(char *buffer){
+	return isGPGCA(buffer)+(extractChecksum(buffer)==calculateChecksum(buffer));
+}
+
+void setup(){
+	printf ("TP1 ENSEA by A.T. \r\n");
+	ssd1315_Init();
+	ssd1315_Clear(SSD1315_COLOR_BLACK);
+	ssd1315_Draw_String(0,0,"Toi",&Font_16x26);
+	ssd1315_Refresh();
+	HAL_GPIO_WritePin(GPS_ENN_GPIO_Port,GPS_ENN_Pin,1);
+}
+
+static char buffer[BUFFER_SIZE]={0};
+
+void loop(){
+
+	//6.6.2
+//	int size = fillBuffer(buffer, BUFFER_SIZE);
+//	printf("Just received : %s \r\n",buffer);
+//	char received_char;
+//	HAL_UART_Abort(&huart1);
+//	while(HAL_UART_Receive(&huart1, (uint8_t *)&received_char, 1, 0)!=HAL_OK){}
+//	HAL_UART_Transmit(&huart2, (uint8_t *) &received_char, 1, HAL_MAX_DELAY);
+
+	//6.6.3
+//	char buffer[BUFFER_MAX_SIZE];
+//	int size;
+//	while(1){
+//			size = fillBuffer(buffer, BUFFER_MAX_SIZE);
+//			printf("Received %d char : %s \n\r", size, buffer);
+//	}
+
+	//6.7
+	char buffer[BUFFER_MAX_SIZE];
+	int size = fillBuffer(buffer, BUFFER_SIZE);
+	printf("Just received : %s \r\n",size);
+	if(isGPGCA(buffer)==1){
+		printf("Trame GPGGA \r\n");
+		printf("Checksum -> calculated %x \t extract %x \r\n",
+		calculateChecksum(buffer), extractChecksum(buffer));
+	}
+}

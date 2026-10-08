@@ -1,0 +1,46 @@
+!SESSION 2026-10-08 21:10:33.270 -----------------------------------------------
+eclipse.buildId=Version 2.2.0
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  C:\Users\redwo\Documents\travail\ENSEA\ENSEA_TP\TP_1A\système microcontroleur\code\TP1\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\redwo\Documents\travail\ENSEA\ENSEA_TP\TP_1A\système microcontroleur\code\TP1\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-10-08 21:11:13.674
+!MESSAGE Log4j2 initialized with config file C:\Users\redwo\Documents\travail\ENSEA\ENSEA_TP\TP_1A\système microcontroleur\code\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-10-08 21:11:17.829
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-10-08 21:11:30.784
+!MESSAGE Indexed 'TP1' (41 sources, 178 headers) in 5,2 sec: 20 030 declarations; 114 192 references; 7 unresolved inclusions; 358 syntax errors; 2 212 unresolved names (1,6 %)
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-10-08 21:11:39.693
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-10-08 21:11:39.694
+!MESSAGE port: 
+!SESSION 2026-10-08 21:58:23.770 -----------------------------------------------
+eclipse.buildId=Version 2.2.0
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  C:\Users\redwo\Documents\travail\ENSEA\ENSEA_TP\TP_1A\système microcontroleur\code\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\redwo\Documents\travail\ENSEA\ENSEA_TP\TP_1A\système microcontroleur\code\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-10-08 21:58:38.030
+!MESSAGE Log4j2 initialized with config file C:\Users\redwo\Documents\travail\ENSEA\ENSEA_TP\TP_1A\système microcontroleur\code\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-10-08 22:18:51.014
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-10-08 22:18:56.720
+!MESSAGE Indexed 'TP1' (40 sources, 139 headers) in 5,56 sec: 16 197 declarations; 105 973 references; 3 unresolved inclusions; 46 syntax errors; 169 unresolved names (0,14 %)
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-10-08 22:19:05.339
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-10-08 22:19:05.340
+!MESSAGE port: 

@@ -60,8 +60,8 @@ all: main-build
 main-build: TP1.elf secondary-outputs
 
 # Tool invocations
-TP1.elf TP1.map: $(OBJS) $(USER_OBJS) D:\documents\système\ microcontrolleur\code\TP1\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "TP1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\documents\système microcontrolleur\code\TP1\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TP1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+TP1.elf TP1.map: $(OBJS) $(USER_OBJS) C:\Users\redwo\Documents\travail\ENSEA\ENSEA_TP\TP_1A\système\ microcontroleur\code\TP1\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "TP1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\redwo\Documents\travail\ENSEA\ENSEA_TP\TP_1A\système microcontroleur\code\TP1\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TP1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -8,8 +8,19 @@
 #ifndef INC_TP1_H_
 #define INC_TP1_H_
 
+#define BUFFER_MAX_SIZE 128
+
+int fillBuffer(char * buffer, int size);
+int isGPGCA(char *frame);
+int extractChecksum(char *buffer);
+int calculateChecksum(char *buffer);
+int checkFrame(char *buffer);
+
+float getLatitude(char *frame);
+float getLongitude(char *frame);
+
 void setup();
 void loop();
 
-#define BUFFER_SIZE 128
+
 #endif /* INC_TP1_H_ */

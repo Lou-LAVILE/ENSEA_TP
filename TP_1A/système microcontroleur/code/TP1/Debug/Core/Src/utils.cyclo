@@ -1,3 +1,10 @@
 ../Core/Src/utils.c:18:5:fillBuffer	4
-../Core/Src/utils.c:45:6:setup	1
-../Core/Src/utils.c:56:6:loop	2
+../Core/Src/utils.c:52:5:isGPGCA	3
+../Core/Src/utils.c:63:5:extractChecksum	2
+../Core/Src/utils.c:73:5:calculateChecksum	2
+../Core/Src/utils.c:85:5:checkFrame	3
+../Core/Src/utils.c:90:5:indexVirgule	2
+../Core/Src/utils.c:101:7:getLatitude	3
+../Core/Src/utils.c:115:7:getLongitude	3
+../Core/Src/utils.c:128:6:setup	1
+../Core/Src/utils.c:139:6:loop	2

@@ -1,0 +1,21 @@
+/*
+ * utils.h
+ *
+ *  Created on: Apr 26, 2024
+ *      Author: antotauv
+ */
+
+#ifndef INC_TP1_H_
+#define INC_TP1_H_
+
+#define BUFFER_MAX_SIZE 128
+
+int fillBuffer(char * buffer, int size);
+int isGPGCA(char *frame);
+int extractChecksum(char *buffer);
+int calculateChecksum(char *buffer);
+void setup();
+void loop();
+
+
+#endif /* INC_TP1_H_ */
