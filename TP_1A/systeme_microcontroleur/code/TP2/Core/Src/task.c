@@ -10,6 +10,8 @@
 #include "task.h"
 #include "led.h"
 #include "button.h"
+#include "fonts.h"
+#include "ssd1315.h"
 
 static int globalDelayInMs=200;
 
@@ -62,12 +64,14 @@ void taskButton(){
 }
 
 void taskScreen(){
-	char* buffer;
-	snprintf(buffer, 16, "Welcome to ENSEA\r\n Name : %s\r\n Speed : %d\r\n",
-			tableau_motif[index_tableau_motif]->name,
-			globalDelayInMs
-			);
+	char buffer[100];
+	ssd1315_Clear(SSD1315_COLOR_BLACK);
+	sprintf(buffer, "Name : %s", tableau_motif[index_tableau_motif]->name);
 
 	ssd1315_Draw_String(0, 0, buffer, &Font_7x10);
+
+	sprintf(buffer, "Speed : %d", globalDelayInMs);
+
+	ssd1315_Draw_String(0, 16, buffer, &Font_7x10);
 	ssd1315_Refresh();
 }

@@ -31,7 +31,6 @@ extern "C" {
 #include <stdlib.h>
 
 #include "stm32l4xx_hal.h"
-#include "ssd1315.h"
 #include "utils.h"
 #include "task.h"
 /* Private includes ----------------------------------------------------------*/

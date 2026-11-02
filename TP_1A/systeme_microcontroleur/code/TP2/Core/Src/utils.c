@@ -8,6 +8,8 @@
 #include "main.h"
 #include "utils.h"
 #include "led.h"
+#include "fonts.h"
+#include "ssd1315.h"
 
 void setup(){
 	printf("Hello world!\r\n");
