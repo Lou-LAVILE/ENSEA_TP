@@ -1,0 +1,14 @@
+LTspice 26.1.1 for Windows
+Circuit: C:\Users\redwo\Documents\travail\ENSEA\ENSEA_TP\TP_1A\électronique de puissance\TP2\Draft1.net
+Start Time: Mon Nov  2 10:51:00 2026
+solver = Normal
+Maximum thread count: 12
+tnom = 27
+temp = 27
+method = trap
+Total elapsed time: 0.000 seconds.
+Total iterations: 0
+C:\Users\redwo\Documents\travail\ENSEA\ENSEA_TP\TP_1A\électronique de puissance\TP2\Draft1.net(2): Minimum of 4 parameters required. Only 3 specified.
+
+V1 N001 0 PULSE(0 10 1)
+^^^^^^^^^^^^^^^^^^^^^^^

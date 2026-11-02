@@ -5,6 +5,7 @@
  *      Author: nicohaas57
  */
 
+#include "main.h"
 #include "button.h"
 
 static BUTTON joystick[5] = {{0,0,BTN_CENTER_GPIO_Port,BTN_CENTER_Pin}, {0,0,BTN_BOTTOM_GPIO_Port,BTN_BOTTOM_Pin},
@@ -21,5 +22,10 @@ int BUTTON_Get_Pressed(DIRECTION direction) {
 }
 
 void BUTTON_Update() {
-	// A compléter
+	for(int i=0; i<5; i++){
+		int temp = HAL_GPIO_ReadPin(joystick[i].port, joystick[i].pinNumber);
+		joystick[i].hasBeenPressed = (1-joystick[i].isOn)*temp;
+		joystick[i].isOn = temp;
+	}
 }
+

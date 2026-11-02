@@ -89,7 +89,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -113,7 +113,8 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_TIM_Base_Start_IT(&htim4);
+  setup();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -121,7 +122,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  loop();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -191,7 +192,18 @@ void SystemClock_Config(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
-
+	static int taskNumber=0;
+	if(htim->Instance == TIM4){
+		taskNumber=(taskNumber+1)%3;
+		switch (taskNumber){
+			case 0 : taskLED();
+						break;
+			case 1 : taskButton();
+						break;
+			case 2 : taskScreen();
+						break;
+		}
+	}
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM6)
   {

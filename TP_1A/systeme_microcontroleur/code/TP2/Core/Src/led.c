@@ -36,7 +36,9 @@ int LED_Get_Value(){
 }
 
 void LED_Update(){
-	// A compléter
+	for(int i=0; i<LED_BAR_SIZE; i++){
+		HAL_GPIO_WritePin(led_bar[i].port, led_bar[i].pinNumber, led_bar[i].isOn);
+	}
 }
 
 void LED_Test_All(){

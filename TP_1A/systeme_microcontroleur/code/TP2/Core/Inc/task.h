@@ -8,6 +8,9 @@
 #ifndef INC_TASK_H_
 #define INC_TASK_H_
 
-
+#define SPEED_CHANGE 10;
+void taskLED();
+void taskButton();
+void taskScreen();
 
 #endif /* INC_TASK_H_ */

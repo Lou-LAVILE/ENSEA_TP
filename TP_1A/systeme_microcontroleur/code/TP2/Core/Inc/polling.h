@@ -10,6 +10,7 @@
 
 #define SPEED_CHANGE_RATE 10;
 
+/*
 typedef struct chenillard_type{
 	MOTIF_TYPE * motif;
 	int speed;
@@ -27,5 +28,5 @@ void aff_motif(MOTIF_TYPE motif);
 void change_motif(CHENILLARD_TYPE* chenillard, int direction);
 void change_speed(CHENILLARD_TYPE* chenillard, int direction);
 void aff_chenillard(CHENILLARD_TYPE chenillard);
-
+*/
 #endif /* INC_POLLING_H_ */

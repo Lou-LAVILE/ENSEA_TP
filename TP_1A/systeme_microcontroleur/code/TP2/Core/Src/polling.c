@@ -5,7 +5,7 @@
  *      Author: redwo
  */
 
-
+/*
 #include "main.h"
 #include "polling.h"
 
@@ -27,4 +27,4 @@ void aff_chenillard(CHENILLARD_TYPE chenillard){
 	displayOnScreen(name);
 }
 
-
+*/

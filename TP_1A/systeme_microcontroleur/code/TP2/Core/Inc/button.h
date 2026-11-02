@@ -8,6 +8,7 @@
 #ifndef INC_BUTTON_H_
 #define INC_BUTTON_H_
 
+
 typedef struct button {
 	int isOn;
 	int hasBeenPressed;
