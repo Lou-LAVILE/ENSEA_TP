@@ -40,6 +40,31 @@ def aff_graph():
     plt.tight_layout()
     plt.show()
 
+# Q4.2. Exemple de fonction permettant d’analyser les courbes
+def analyze_step_response(t, y):
+    # Valeur finale de la réponse indicielle
+    y_final = y[-1]
+    # Premier pic
+    idx_peak = np.argmax(y)
+    t_peak = t[idx_peak]
+    y_peak = y[idx_peak]
+
+    # Dépassement
+    if ((y_final != 0) & (y_peak > y_final)):
+        overshoot = ((y_peak - y_final) / y_final) * 100
+    else:
+        overshoot = 0
+
+    # Temps de réponse à 5%
+    outside = np.where((y < 0.95*y_final) | (y > 1.05*y_final))[0]
+    if len(outside) > 0:
+        t_resp = t[outside[-1]]
+        y_resp = y[outside[-1]]
+    else:
+        t_resp = None
+        y_resp = None
+    return t_peak, y_peak, overshoot, t_resp, y_resp
+
 def main():
     # Q1.1. Paramètres du système
 
@@ -195,30 +220,6 @@ def main():
     if aff[2]:
         print("G_T", G_T)
         print("G_I", G_I)
-        # Q4.2. Exemple de fonction permettant d’analyser les courbes
-        def analyze_step_response(t, y):
-            # Valeur finale de la réponse indicielle
-            y_final = y[-1]
-            # Premier pic
-            idx_peak = np.argmax(y)
-            t_peak = t[idx_peak]
-            y_peak = y[idx_peak]
-
-            # Dépassement
-            if ((y_final != 0) & (y_peak > y_final)):
-                overshoot = ((y_peak - y_final) / y_final) * 100
-            else:
-                overshoot = 0
-
-            # Temps de réponse à 5%
-            outside = np.where((y < 0.95*y_final) | (y > 1.05*y_final))[0]
-            if len(outside) > 0:
-                t_resp = t[outside[-1]]
-                y_resp = y[outside[-1]]
-            else:
-                t_resp = None
-                y_resp = None
-            return t_peak, y_peak, overshoot, t_resp, y_resp
 
         for L_H in [(G_T,"T",'g'), (G_I, "H_I", 'b')]:
             # Q4.1. Tracé et calcul des temps/overshoot/…
@@ -249,9 +250,215 @@ def main():
             plt.ylabel("amplitude")
         aff_graph()
 
+    KP_val = [0.1, 0.3, 1, 3, 10]
+    color = ['b', 'g', 'r', 'y', 'm']
 
+    if aff[3][0]:
+        # Q7.2. Tracé des Bode du correcteur
+        for i, KP in enumerate(KP_val):
+            # Definition du correcteur proportionnel – Avec frequency_response en manuel
+            C_P = ctrl.TransferFunction([KP], [1])
+            CP_mag, CP_phase, CP_omega = ctrl.frequency_response(C_P, omega=w_axis)
+            # Diagramme de Bode (gain et phase)
+            plt.subplot(2, 2, 1)
+            plt.semilogx(CP_omega, 20*np.log10(CP_mag), color[i], label=f"KP = {KP}")
+            plt.xlabel("frequency (Hz)")
+            plt.ylabel("Gain (dB)")
+            plt.title("Diagramme de Bode")
+            plt.legend()
+
+
+            plt.subplot(2, 2, 3)
+            plt.semilogx(CP_omega, CP_phase/np.pi*180, color[i], label=f"KP = {KP}")
+            plt.xlabel("frequency (Hz)")
+            plt.ylabel("Phase (°)")
+            plt.legend()
+
+            #Black-Nichol
+            plt.subplot(1, 2, 2)
+            ctrl.nichols_plot(C_P, color=color[i], label=f"KP = {KP}")
+            plt.legend()
+
+
+            # Création de l'axe des temps
+            te = 0.01
+            t_final = 5
+            Taxis = np.arange(0, t_final, te)
+
+            # Et dans la boucle for…
+            CP = ctrl.TransferFunction([KP], [1])
+            t_TCP, y_TCP = ctrl.step_response(ctrl.feedback(CP*G_T, 1), Taxis)
+            t_peak, y_peak, overshoot, t_resp, y_resp = analyze_step_response(t_TCP, y_TCP, )
+            print(f"Tps de réponse à 5% pour KP = {KP} \t: {t_resp} s et D% = {overshoot}")
+
+        aff_graph()
+
+    if aff[3][1]:
+        print("P+BO")
+        # Q8.2. Tracé des Bode du correcteur
+        for i, KP in enumerate(KP_val):
+            # Definition du correcteur proportionnel – Avec frequency_response en manuel
+            C_P = ctrl.TransferFunction([KP], [1])
+            CP_mag, CP_phase, CP_omega = ctrl.frequency_response(C_P*G_T, omega=w_axis)
+            # Diagramme de Bode (gain et phase)
+            plt.subplot(2, 2, 1)
+            plt.semilogx(CP_omega, 20*np.log10(CP_mag), color[i], label=f"KP = {KP}")
+            plt.xlabel("frequency (Hz)")
+            plt.ylabel("Gain (dB)")
+            plt.title("Diagramme de Bode")
+            plt.legend()
+
+            plt.subplot(2, 2, 3)
+            plt.semilogx(CP_omega, CP_phase/np.pi*180, color[i], label=f"KP = {KP}")
+            plt.xlabel("frequency (Hz)")
+            plt.ylabel("Phase (°)")
+            plt.legend()
+
+            plt.subplot(1, 2, 2)
+            ctrl.nichols_plot(C_P*G_T, color=color[i], label=f"KP = {KP}")
+            plt.legend()
+
+        aff_graph()
+
+    # T en boucle fermée
+    tau1 = (L_tot*f+J*R_tot)/(K**2+R_tot*f)+ 1/2 * (1-4*L_tot*f/(K**2+R_tot*f))**(1/2)
+    tau2 = -1/2 * (1-4*L_tot*f/(K**2+R_tot*f))**(1/2)
+    den = np.polymul([tau1, 1], [tau2, 1])
+    den = np.polymul(den, [tau3, 1])
+    G_T_BF = ctrl.TransferFunction([K_T], den)
+
+    if aff[3][2]:
+        for i, KP in enumerate(KP_val):
+            #Q9
+            # Création de l'axe des temps
+            te = 0.01
+            t_final = 5
+            Taxis = np.arange(0, t_final, te)
+
+            # Et dans la boucle for…
+            CP = ctrl.TransferFunction([KP], [1])
+            t_TCP, y_TCP = ctrl.step_response(ctrl.feedback(CP*G_T_BF, 1), Taxis)
+            t_peak, y_peak, overshoot, t_resp, y_resp = analyze_step_response(t_TCP, y_TCP, )
+            print(f"Tps de réponse à 5% pour KP = {KP} \t: {t_resp} s et D% = {overshoot}")
+
+            plt.plot(t_TCP, y_TCP, color=color[i], label=f"KP = {KP}")
+            plt.title("Réponse temporelles en BF")
+            plt.xlabel("time (s)")
+            plt.ylabel("amplitude")
+            plt.grid()
+            plt.legend()
+
+        aff_graph()
+
+    KP = 1
+    Ti_val = [0.03, 0.1, 0.3, 1, 3, 10]
+    color = ['b', 'g', 'r', 'y', 'm', 'c']
+
+    if aff[4][0]:
+        # Q12.2. Tracé des Bode du correcteur
+        for i, Ti in enumerate(Ti_val):
+            # Definition du correcteur proportionnel – Avec frequency_response en manuel
+            C_P = ctrl.TransferFunction([KP*Ti, KP], [Ti, 0])
+            CP_mag, CP_phase, CP_omega = ctrl.frequency_response(C_P, omega=w_axis)
+            # Diagramme de Bode (gain et phase)
+            plt.subplot(2, 2, 1)
+            plt.semilogx(CP_omega, 20*np.log10(CP_mag), color[i], label=f"Ti = {Ti}")
+            plt.xlabel("frequency (Hz)")
+            plt.ylabel("Gain (dB)")
+            plt.title("Diagramme de Bode")
+            plt.legend()
+
+
+            plt.subplot(2, 2, 3)
+            plt.semilogx(CP_omega, CP_phase/np.pi*180, color[i], label=f"Ti = {Ti}")
+            plt.xlabel("frequency (Hz)")
+            plt.ylabel("Phase (°)")
+            plt.legend()
+
+            #Black-Nichol
+            plt.subplot(1, 2, 2)
+            ctrl.nichols_plot(C_P, color=color[i], label=f"Ti = {Ti}")
+            plt.legend()
+
+
+            # Création de l'axe des temps
+            te = 0.01
+            t_final = 5
+            Taxis = np.arange(0, t_final, te)
+
+            # Et dans la boucle for…
+            CP = ctrl.TransferFunction([Ti], [1])
+            t_TCP, y_TCP = ctrl.step_response(ctrl.feedback(CP*G_T, 1), Taxis)
+            t_peak, y_peak, overshoot, t_resp, y_resp = analyze_step_response(t_TCP, y_TCP, )
+            print(f"Tps de réponse à 5% pour Ti = {Ti} \t: {t_resp} s et D% = {overshoot}")
+
+        aff_graph()
+
+    if aff[4][1]:
+        print("P+BO")
+        # Q13
+        for i, Ti in enumerate(Ti_val):
+            # Definition du correcteur proportionnel – Avec frequency_response en manuel
+            C_P = ctrl.TransferFunction([KP*Ti, KP], [Ti, 0])
+            CP_mag, CP_phase, CP_omega = ctrl.frequency_response(C_P*G_T, omega=w_axis)
+            # Diagramme de Bode (gain et phase)
+            plt.subplot(2, 2, 1)
+            plt.semilogx(CP_omega, 20*np.log10(CP_mag), color[i], label=f"Ti = {Ti}")
+            plt.xlabel("frequency (Hz)")
+            plt.ylabel("Gain (dB)")
+            plt.title("Diagramme de Bode")
+            plt.legend()
+
+            plt.subplot(2, 2, 3)
+            plt.semilogx(CP_omega, CP_phase/np.pi*180, color[i], label=f"Ti = {Ti}")
+            plt.xlabel("frequency (Hz)")
+            plt.ylabel("Phase (°)")
+            plt.legend()
+
+            plt.subplot(1, 2, 2)
+            ctrl.nichols_plot(C_P*G_T, color=color[i], label=f"Ti = {Ti}")
+            plt.legend()
+
+            #marge de gain et phase
+            T_gm, T_pm, T_wg, T_wp = ctrl.margin(C_P*G_T)
+            T_gm = - 20*np.log10(T_gm)
+            print(f"Marge de gain de T pour {Ti} (dB): {T_gm}")
+            print(f"Marge de phase de T pour {Ti} (°): {T_pm}")
+
+        aff_graph()
+
+    # T en boucle fermée
+    tau1 = (L_tot*f+J*R_tot)/(K**2+R_tot*f)+ 1/2 * (1-4*L_tot*f/(K**2+R_tot*f))**(1/2)
+    tau2 = -1/2 * (1-4*L_tot*f/(K**2+R_tot*f))**(1/2)
+    den = np.polymul([tau1, 1], [tau2, 1])
+    den = np.polymul(den, [tau3, 1])
+    G_T_BF = ctrl.TransferFunction([K_T], den)
+
+    # Q14
+    if aff[4][2]:
+        for i, Ti in enumerate(Ti_val):
+            #Q9
+            # Création de l'axe des temps
+            te = 0.01
+            t_final = 5
+            Taxis = np.arange(0, t_final, te)
+
+            # Definition du correcteur proportionnel – Avec frequency_response en manuel
+            C_P = ctrl.TransferFunction([KP*Ti, KP], [Ti, 0])
+            t_TCP, y_TCP = ctrl.step_response(ctrl.feedback(CP*G_T_BF, 1), Taxis)
+            t_peak, y_peak, overshoot, t_resp, y_resp = analyze_step_response(t_TCP, y_TCP, )
+            print(f"Tps de réponse à 5% pour Ti = {Ti} \t: {t_resp} s et D% = {overshoot}")
+
+            plt.plot(t_TCP, y_TCP, color=color[i], label=f"Ti = {Ti}")
+            plt.title("Réponse temporelles en BF")
+            plt.xlabel("time (s)")
+            plt.ylabel("amplitude")
+            plt.grid()
+            plt.legend()
+
+        aff_graph()
 
 if __name__=="__main__":
     #parameter of which chart while be printed
-    aff = (0, 0, 1, 1)
+    aff = (0, 0, 0, (0, 0, 0), (1, 1, 1))
     main()
